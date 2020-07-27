@@ -23,10 +23,11 @@
                     <i class="fa fa-user"></i>
                     <span><b style="text-transform: capitalize;">{{ post.user.username }}</b></span>
                 </span>&nbsp;&nbsp;&nbsp;
-                <small class="follow-btn">FOLLOWING <span class="badge badge-pill badge-primary">2</span></small>
+                <small class="follow-btn">FOLLOWING <span class="badge badge-pill badge-primary">{{ followers }}</span></small>
             </div>
             <div class="col-md-6 timestamp">
-                2020/27/07 04:42 PM
+                <!-- 2020/27/07 04:42 PM -->
+                {{ post.timestamp }}
             </div>
             <br>
             <div class="col-12 post-body">
@@ -34,11 +35,11 @@
             </div>
             <div class="col-9">
                 <div class="btn btn-primary vote-down">
-                    <i class="fa fa-thumbs-down"><span class="badge badge-pill badge-primary">0</span></i>
+                    <i class="fa fa-thumbs-down"><span class="badge badge-pill badge-primary">{{ dislikes }}</span></i>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="btn btn-primary vote-up">
-                    <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">2</span></i>
+                    <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">{{ likes }}</span></i>
                 </div>
             </div>
             <div class="col-3 d-flex justify-content-end">
