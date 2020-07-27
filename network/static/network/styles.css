@@ -1,0 +1,46 @@
+.compose-post{
+    padding: 2rem 5rem;
+}
+
+#post-textarea{
+    width: 100%;
+    height: 15vh;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    padding: 1rem;
+}
+
+.all-post-container{
+    padding: 0 5rem;
+}
+
+.single-post{
+    margin-bottom: 3rem;
+}
+.post-author{
+    font-size: 1.5rem;
+}
+
+.follow-btn{
+    padding: .2rem;
+    border: 1px solid;
+    font-size: .6rem;
+    letter-spacing: .1rem;
+    cursor: pointer;
+}
+.follow-btn .badge{
+    font-size: .65rem;
+}
+
+.timestamp{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.post-body{
+    margin: 1rem 0;
+    padding: .5rem 1rem;
+    box-shadow: 0px 6px 7px 0px;
+    line-height: 2rem;
+    text-align: justify;
+}
