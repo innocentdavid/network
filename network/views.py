@@ -17,16 +17,13 @@ def index(request):
 
     posts = Post.objects.all()
 
-    for post in posts:
-        pId = post.id
-    likes = Like.objects.filter(post=pId).count()
-    print(likes)
-    dislikes = Dislike.objects.filter(post=pId).count()
-    print(dislikes)
+    likes = [Like.objects.filter(post=p.id).count() for p in posts]
+    posts.append(likes)
     
-    followers = Follower.objects.filter(user=request.user).count()
-    print(followers)
-
+    dislikes = [Dislike.objects.filter(post=p.id).count() for p in posts]
+    
+    followers = [Follower.objects.filter(user=p.user).count() for p in posts]
+    
     context = {'posts': posts, 'followers': followers, 'likes': likes, 'dislikes': dislikes}
     return render(request, "network/index.html", context)
 

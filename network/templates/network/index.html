@@ -2,80 +2,94 @@
 
 {% block body %}
 <div class="container">
-    <div class="compose-post">
+  <div class="compose-post">
+    <form action="" method="post">
+      {% csrf_token %}
+      <textarea name="post-body" id="post-textarea" placeholder="Whats on your mind?"></textarea>
+      {% if user.is_authenticated %}
+      <input type="submit" value="Post" class="btn btn-primary">
+      {% else %}
+      <div class="btn-sm btn-danger">
+        Please Log In First
+      </div>
+      {% endif %}
+    </form>
+  </div>
+  <hr>
+  <center>
+    <h2>ALL POST</h2>
+  </center>
+  <br>
+  <div class="container all-post-container">
+
+    {% for post in posts %}
+    <div class="row single-post">
+      <div class="col-md-6">
+        <span class="post-author">
+          <i class="fa fa-user"></i>
+          <span><b style="text-transform: capitalize;">{{ post.user.username }}</b></span>
+        </span>&nbsp;&nbsp;&nbsp;
+        <small class="follow-btn">{% if f == 0 %} <span onclick="alert('following')">FOLLOW</span> {% else %} <span onclick="alert('unfollowed!')">FOLLOWING</span> {% endif  %} <span class="badge badge-pill badge-primary">{{ follower }}</span></small>
+      </div>
+      <div class="col-md-6 timestamp">
+        <!-- 2020/27/07 04:42 PM -->
+        {{ post.timestamp }}
+      </div>
+      <br>
+      <div class="col-12 post-body">
+        {{ post.body }}
+      </div>
+
+      {% if user.is_authenticated %}
+      <div class="col-9">
+        <div class="btn btn-primary vote-down">
+          <i class="fa fa-thumbs-down"><span class="badge badge-pill badge-primary">{{ dislike }}</span></i>
+        </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="btn btn-primary vote-up">
+          <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">{{ like }}</span></i>
+        </div>
+      </div>
+      {% if post.user == request.user %}
+      <div class="col-3 d-flex justify-content-end">
+        <div class="btn btn-danger">
+          Edit
+        </div>
+      </div>
+      {% endif %}
+
+      {% endif %}
+      <br><br>
+      <div class="col-12">
+        <button class="btn">
+          Comments <span class="badge badge-primary comments-count">3</span>
+        </button>
+      </div>
+      {% if user.is_authenticated %}
+      <br><br>
+      <div class="col-12">
         <form action="" method="post">
-            {% csrf_token %}
-            <textarea name="post-body" id="post-textarea" placeholder="Whats on your mind?"></textarea>
-            <input type="submit" value="Post" class="btn btn-primary">
+          <div class="d-flex justify-content-center align-items-center">
+            <i class="fa fa-user"></i>&nbsp;&nbsp;
+            <span><b>{{ user.username }} </b></span>&nbsp;&nbsp;&nbsp;
+            <input type="text" class="form-control" placeholder="Add Comment">
+          </div>
         </form>
-    </div>
-    <hr>
-    <center>
-        <h2>ALL POST</h2>
-    </center>
-    <br>
-    <div class="container all-post-container">
-
-        {% for post in posts %}
-        <div class="row single-post">
-            <div class="col-md-6">
-                <span class="post-author">
-                    <i class="fa fa-user"></i>
-                    <span><b style="text-transform: capitalize;">{{ post.user.username }}</b></span>
-                </span>&nbsp;&nbsp;&nbsp;
-                <small class="follow-btn">FOLLOWING <span class="badge badge-pill badge-primary">{{ followers }}</span></small>
-            </div>
-            <div class="col-md-6 timestamp">
-                <!-- 2020/27/07 04:42 PM -->
-                {{ post.timestamp }}
-            </div>
-            <br>
-            <div class="col-12 post-body">
-                {{ post.body }}
-            </div>
-            <div class="col-9">
-                <div class="btn btn-primary vote-down">
-                    <i class="fa fa-thumbs-down"><span class="badge badge-pill badge-primary">{{ dislikes }}</span></i>
-                </div>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <div class="btn btn-primary vote-up">
-                    <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">{{ likes }}</span></i>
-                </div>
-            </div>
-            <div class="col-3 d-flex justify-content-end">
-                <div class="btn btn-danger">Edit</div>
-            </div>
-            <br><br>
-            <div class="col-12">
-                <button class="btn">
-                    Comments <span class="badge badge-primary comments-count">3</span>
-                </button>
-            </div>
-            {% if user.is_authenticated %}
-            <br><br>
-            <div class="col-12">
-                <form action="" method="post">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <i class="fa fa-user"></i>&nbsp;&nbsp;
-                        <span><b>{{ user.username }} </b></span>&nbsp;&nbsp;&nbsp;
-                        <input type="text" class="form-control" placeholder="Add Comment">
-                    </div>
-                </form>
-            </div>
-            {% endif %}
-        </div>
-        <br>
-        <!-- post 1 -->
-        {% empty %}
-        <div class="row">
-            <center><h2>No Post Yet!</h2></center>
-        </div>
-        {% endfor %}
-
+      </div>
+      {% endif %}
     </div>
     <br>
-    <br>
-    <br>
-    <br>
+    <!-- post 1 -->
+    {% empty %}
+    <div class="row">
+      <center><h2>No Post Yet!</h2></center>
+    </div>
+    {% endfor %}
+
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
 </div>
 {% endblock %}
