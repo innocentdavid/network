@@ -1,8 +1,12 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 
@@ -72,9 +76,15 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-
+@csrf_exempt
+@login_required
 def vote(request):
+  if request.method == 'POST':
+    data = json.loads(request.body)
+    post_id = data.get('post_id')
+    print(post_id)
     return HttpResponse('error')
+    
     # do something like below where you'll check if rUser has dislike and wants to like; firstly remove the dislike and add a like
     # update both like table and totalLikes in post table
 
