@@ -18,12 +18,9 @@ def index(request):
         post.save()
 
     posts = Post.objects.all().order_by('-pk')
-    x = Post.objects.all()
-    for x in x:
-        f = Follower.objects.filter(user=x.user, follower=request.user).count()
-
-        context = {'posts': posts, 'f': f}
-        return render(request, "network/index.html", context)
+    
+    context = {'posts': posts}
+    return render(request, "network/index.html", context)
 
 
 def login_view(request):
@@ -85,6 +82,16 @@ def vote(request):
         action = data.get('action')
         post_id = data.get('post_id')
         if action == 'like':
+            dislike = Dislike.objects.filter(user=request.user, post=post_id).count()
+            if dislike > 0:
+                l = Dislike.objects.filter(user=request.user, post=post_id)
+                l.delete()
+
+                post = Post.objects.filter(pk=post_id)
+                for post in post:
+                    post.totalDislikes = int(post.totalDislikes) - 1
+                    post.save()
+
             like = Like.objects.filter(user=request.user, post=post_id).count()
             if like > 0:
                 l = Like.objects.filter(user=request.user, post=post_id)
@@ -92,12 +99,12 @@ def vote(request):
             
                 post = Post.objects.filter(pk=post_id)
                 for post in post:
-                    int(post.totalLikes) - 1
+                    post.totalLikes = int(post.totalLikes) - 1
                     post.save()
                 
                 totalLikes = post.totalLikes
-                print({'minus':totalLikes})
-                return JsonResponse({"totalLikes":totalLikes}, status=200)
+                totalDislikes = post.totalDislikes
+                return JsonResponse({"totalLikes":totalLikes, 'totalDislikes':totalDislikes}, status=200)
             else:
                 l = Like(user=request.user, post=Post.objects.get(pk=post_id))
                 l.save()
@@ -108,36 +115,48 @@ def vote(request):
                     post.save()
 
                 totalLikes = post.totalLikes
-                print({'add':totalLikes})
-                return JsonResponse({"totalLikes":totalLikes}, status=200)
+                totalDislikes = post.totalDislikes
+                return JsonResponse({"totalLikes":totalLikes, 'totalDislikes':totalDislikes}, status=200)
+        elif action == 'dislike':
+            like = Like.objects.filter(user=request.user, post=post_id).count()
+            if like > 0:
+                l = Like.objects.filter(user=request.user, post=post_id)
+                l.delete()
+            
+                post = Post.objects.filter(pk=post_id)
+                for post in post:
+                    post.totalLikes = int(post.totalLikes) - 1
+                    post.save()
+
+            dislike = Dislike.objects.filter(user=request.user, post=post_id).count()
+            if dislike > 0:
+                l = Dislike.objects.filter(user=request.user, post=post_id)
+                l.delete()
+
+                post = Post.objects.filter(pk=post_id)
+                for post in post:
+                    post.totalDislikes = int(post.totalDislikes) - 1
+                    post.save()
+
+                totalLikes = post.totalLikes
+                totalDislikes = post.totalDislikes
+                return JsonResponse({"totalLikes":totalLikes, 'totalDislikes':totalDislikes}, status=200)
+            
+            else:
+                l = Dislike(user=request.user, post=Post.objects.get(pk=post_id))
+                l.save()
+            
+                post = Post.objects.filter(pk=post_id)
+                for post in post:
+                    post.totalDislikes = int(post.totalDislikes) + 1
+                    post.save()
+
+                totalLikes = post.totalLikes
+                totalDislikes = post.totalDislikes
+                return JsonResponse({"totalLikes":totalLikes, 'totalDislikes':totalDislikes}, status=200)
             
         return HttpResponse('error')
     
     # do something like below where you'll check if rUser has dislike and wants to like; firstly remove the dislike and add a like
     # update both like table and totalLikes in post table
 
-
-    # try:
-    #     email = Email.objects.get(user=request.user, pk=email_id)
-    # except Email.DoesNotExist:
-    #     return JsonResponse({"error": "Email not found."}, status=404)
-
-    # # Return email contents
-    # if request.method == "GET":
-    #     return JsonResponse(email.serialize())
-
-    # # Update whether email is read or should be archived
-    # elif request.method == "PUT":
-    #     data = json.loads(request.body)
-    #     if data.get("read") is not None:
-    #         email.read = data["read"]
-    #     if data.get("archived") is not None:
-    #         email.archived = data["archived"]
-    #     email.save()
-    #     return HttpResponse(status=204)
-
-    # # Email must be via GET or PUT
-    # else:
-    #     return JsonResponse({
-    #         "error": "GET or PUT request required."
-    #     }, status=400)

@@ -13,6 +13,11 @@
 .all-post-container{
     padding: 0 5rem;
 }
+@media (max-width:767px){
+    .all-post-container{
+        padding: 0 2rem;
+    }
+}
 
 .single-post{
     margin-bottom: 3rem;
