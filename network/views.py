@@ -9,23 +9,17 @@ from .models import *
 
 def index(request):
     if request.POST:
-        if request.POST['post-body']:
-            res = request.POST['post-body']
-            post = Post(user=request.user, body=res)
-            post.save()
-            print(post.id)
+        res = request.POST['post-body']
+        post = Post(user=request.user, body=res)
+        post.save()
 
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-pk')
+    x = Post.objects.all()
+    for x in x:
+        f = Follower.objects.filter(user=x.user, follower=request.user).count()
 
-    likes = [Like.objects.filter(post=p.id).count() for p in posts]
-    posts.append(likes)
-    
-    dislikes = [Dislike.objects.filter(post=p.id).count() for p in posts]
-    
-    followers = [Follower.objects.filter(user=p.user).count() for p in posts]
-    
-    context = {'posts': posts, 'followers': followers, 'likes': likes, 'dislikes': dislikes}
-    return render(request, "network/index.html", context)
+        context = {'posts': posts, 'f': f}
+        return render(request, "network/index.html", context)
 
 
 def login_view(request):
@@ -78,3 +72,34 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def vote(request):
+    return HttpResponse('error')
+    # do something like below where you'll check if rUser has dislike and wants to like; firstly remove the dislike and add a like
+    # update both like table and totalLikes in post table
+
+
+    # try:
+    #     email = Email.objects.get(user=request.user, pk=email_id)
+    # except Email.DoesNotExist:
+    #     return JsonResponse({"error": "Email not found."}, status=404)
+
+    # # Return email contents
+    # if request.method == "GET":
+    #     return JsonResponse(email.serialize())
+
+    # # Update whether email is read or should be archived
+    # elif request.method == "PUT":
+    #     data = json.loads(request.body)
+    #     if data.get("read") is not None:
+    #         email.read = data["read"]
+    #     if data.get("archived") is not None:
+    #         email.archived = data["archived"]
+    #     email.save()
+    #     return HttpResponse(status=204)
+
+    # # Email must be via GET or PUT
+    # else:
+    #     return JsonResponse({
+    #         "error": "GET or PUT request required."
+    #     }, status=400)

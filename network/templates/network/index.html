@@ -14,6 +14,14 @@
       </div>
       {% endif %}
     </form>
+    <form action="" method="post">
+      <div class="form-group">
+        <label for="test">test</label>
+        <input type="text" class="form-control" name="test" id="test" aria-describedby="helpId" placeholder="test">
+        <small id="helpId" class="form-text text-muted">Help text</small>
+        <input type="submit" value="submit">
+      </div>
+    </form>
   </div>
   <hr>
   <center>
@@ -24,12 +32,14 @@
 
     {% for post in posts %}
     <div class="row single-post">
-      <div class="col-md-6">
+      <div class="col-md-6" onclick="alert('User Profile')">
         <span class="post-author">
           <i class="fa fa-user"></i>
-          <span><b style="text-transform: capitalize;">{{ post.user.username }}</b></span>
-        </span>&nbsp;&nbsp;&nbsp;
-        <small class="follow-btn">{% if f == 0 %} <span onclick="alert('following')">FOLLOW</span> {% else %} <span onclick="alert('unfollowed!')">FOLLOWING</span> {% endif  %} <span class="badge badge-pill badge-primary">{{ follower }}</span></small>
+          <span><b style="text-transform: capitalize; cursor: pointer;">{{ post.user.username }}</b></span>
+        </span>
+        <small class="follow-btn"><span>FOLLOWING</span>
+          <span class="badge badge-pill badge-primary">{{ post.totalFollower }}</span>
+        </small>
       </div>
       <div class="col-md-6 timestamp">
         <!-- 2020/27/07 04:42 PM -->
@@ -41,13 +51,13 @@
       </div>
 
       {% if user.is_authenticated %}
-      <div class="col-9">
-        <div class="btn btn-primary vote-down">
-          <i class="fa fa-thumbs-down"><span class="badge badge-pill badge-primary">{{ dislike }}</span></i>
+      <div class="col-9" id="{{ post.id }}">
+        <div class="btn btn-primary vote-down" onclick="dislike('{{ post.id}}')">
+          <i class="fa fa-thumbs-down"><span class="badge badge-pill badge-primary">{{ post.totalDislikes }}</span></i>
         </div>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <div class="btn btn-primary vote-up">
-          <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">{{ like }}</span></i>
+        <div class="btn btn-primary vote-up" onclick="like('{{ post.id}}')">
+          <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">{{ post.totalLikes }}</span></i>
         </div>
       </div>
       {% if post.user == request.user %}
@@ -59,7 +69,7 @@
       {% endif %}
 
       {% endif %}
-      <br><br>
+      <!-- <br><br>
       <div class="col-12">
         <button class="btn">
           Comments <span class="badge badge-primary comments-count">3</span>
@@ -76,7 +86,7 @@
           </div>
         </form>
       </div>
-      {% endif %}
+      {% endif %} -->
     </div>
     <br>
     <!-- post 1 -->
