@@ -2,22 +2,8 @@
 
 {% block body %}
 <div class="container">
-  <div class="compose-post">
-    <form action="" method="post">
-      {% csrf_token %}
-      <textarea name="post-body" id="post-textarea" placeholder="Whats on your mind?"></textarea>
-      {% if user.is_authenticated %}
-      <input type="submit" value="Post" class="btn btn-primary">
-      {% else %}
-      <div class="btn-sm btn-danger">
-        Please Log In First
-      </div>
-      {% endif %}
-    </form>
-  </div>
-  <hr>
   <center>
-    <h2>ALL POST</h2>
+    <h1>FOLLOWING</h1>
   </center>
   <br>
   <div class="container all-post-container">
@@ -52,13 +38,6 @@
           <i class="fa fa-thumbs-up"><span class="badge badge-pill badge-primary">{{ post.totalLikes }}</span></i>
         </div>
       </div>
-      {% if post.user == request.user %}
-      <div class="col-3 d-flex justify-content-end">
-        <div class="btn btn-danger" onclick="editPost('{{ post.id }}')">
-          Edit
-        </div>
-      </div>
-      {% endif %}
 
       {% endif %}
     </div>

@@ -160,3 +160,21 @@ def vote(request):
     # do something like below where you'll check if rUser has dislike and wants to like; firstly remove the dislike and add a like
     # update both like table and totalLikes in post table
 
+def profile(request, user_id):
+    if request.user.is_authenticated:
+        posts = Post.objects.filter(user=request.user).order_by('-pk')
+        
+        context = {'posts': posts}
+        return render(request, "network/profile.html", context)
+
+    return HttpResponseRedirect(reverse("login"))
+
+
+def following(request):
+    if request.user.is_authenticated:
+        posts = Post.objects.filter().order_by('-pk')
+        
+        context = {'posts': posts}
+        return render(request, "network/following.html", context)
+
+    return HttpResponseRedirect(reverse("login"))

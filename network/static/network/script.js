@@ -46,3 +46,7 @@ function dislike(id) {
       dislike.innerHTML = response.totalDislikes
     });
 }
+
+function editPost(id) {
+  alert(`edit-post(${id})`);
+}

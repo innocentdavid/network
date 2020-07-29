@@ -15,6 +15,29 @@
   <script src="{% static 'network/script.js' %}"></script>
 </head>
 <body>
+  <style>
+    .edit-cont{
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10rem 5rem;
+    }
+  </style>
+
+  <div class="edit-cont">
+    <form action="" method="post" id="edit-post-form">
+      <div class="form-group">
+        <textarea class="form-control" name="edit_post" id="edit_post" rows="7"></textarea>
+        <br><br>
+        <center><input type="submit" value="Edit" class="btn btn-primary"></center>
+      </div>
+    </form>
+  </div>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/"><h4>Network</h4></a>
@@ -31,7 +54,10 @@
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="#">Following</a>
+          <a class="nav-link" href="/following">Following</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile/{{ request.user }}">Profile&nbsp;<i class="fa fa-user"></i></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
