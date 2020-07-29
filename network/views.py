@@ -81,9 +81,37 @@ def register(request):
 def vote(request):
   if request.method == 'POST':
     data = json.loads(request.body)
-    post_id = data.get('post_id')
-    print(post_id)
-    return HttpResponse('error')
+    if data.get('post_id') is not None:
+        action = data.get('action')
+        post_id = data.get('post_id')
+        if action == 'like':
+            like = Like.objects.filter(user=request.user, post=post_id).count()
+            if like > 0:
+                l = Like.objects.filter(user=request.user, post=post_id)
+                l.delete()
+            
+                post = Post.objects.filter(pk=post_id)
+                for post in post:
+                    int(post.totalLikes) - 1
+                    post.save()
+                
+                totalLikes = post.totalLikes
+                print({'minus':totalLikes})
+                return JsonResponse({"totalLikes":totalLikes}, status=200)
+            else:
+                l = Like(user=request.user, post=Post.objects.get(pk=post_id))
+                l.save()
+            
+                post = Post.objects.filter(pk=post_id)
+                for post in post:
+                    post.totalLikes = int(post.totalLikes) + 1
+                    post.save()
+
+                totalLikes = post.totalLikes
+                print({'add':totalLikes})
+                return JsonResponse({"totalLikes":totalLikes}, status=200)
+            
+        return HttpResponse('error')
     
     # do something like below where you'll check if rUser has dislike and wants to like; firstly remove the dislike and add a like
     # update both like table and totalLikes in post table

@@ -12,13 +12,14 @@ function like(id) {
   fetch('/vote', {
     method: 'POST',
     body: JSON.stringify({
+      action: 'like',
       post_id: id
     })
   })
   .then(data => {
     console.log(data);
-    // like.innerHTML = data.like
-    // dislike.innerHTML = data.dislike
+    like.innerHTML = data.status;
+    // dislike.innerHTML = data.totalDislikes
   });
 }
 
