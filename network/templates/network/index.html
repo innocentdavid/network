@@ -29,9 +29,6 @@
           <i class="fa fa-user"></i>
           <span><b style="text-transform: capitalize; cursor: pointer;">{{ post.user }}</b></span>
         </span>
-        <small class="follow-btn"><span>FOLLOWING</span>
-          <span class="badge badge-pill badge-primary">{{ post.totalFollower }}</span>
-        </small>
       </a>
       <div class="col-md-6 timestamp" style="text-transform: capitalize;">
         <!-- 2020/27/07 04:42 PM -->
@@ -39,7 +36,9 @@
       </div>
       <br>
       <div class="col-12 post-body">
-        {{ post.body }}
+        <p style="word-wrap: break-word;" id="post_body">
+          {{ post.body }}
+        </p>
       </div>
 
       {% if user.is_authenticated %}

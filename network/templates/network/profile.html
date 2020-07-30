@@ -20,17 +20,22 @@
             <div class="profile profile-body">
                 <center>
                     <div style="font-size: larger;">
-                        <span><b>Following:</b> <span>10</span></span>
+                        <span><b>Following:</b> <span>{{ following }}</span></span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span><b>Followers:</b> <span>50</span></span>
+                        <span><b>Followers:</b> <span>{{ follower }}</span></span>
                     </div>
                     <br>
+                    {% if request.user.username != pUser %}
+                    {% if f == 0 %}
                     <div style="font-size: larger;" class="btn btn-success">
                         Follow
                     </div>
+                    {% else %}
                     <div style="font-size: larger;" class="btn btn-danger">
                         Unfollow
                     </div>
+                    {% endif %}
+                    {% endif %}
                 </center>
             </div>
             <br>
@@ -38,10 +43,10 @@
             <!-- profile-body -->
 
             <div class="profile profile-footer d-flex justify-content-around" style="font-size: 2rem;">
-                <i class="fa fa-facebook-square" style="color: blue;"></i>
-                <i class="fa fa-github-square"></i>
-                <i class="fa fa-twitter-square" style="color: rgb(49, 105, 226);"></i>
-                <i class="fa fa-instagram" style="color: red;"></i>
+                <i class="fa fa-facebook-square" style="cursor: pointer; color: blue;"></i>
+                <i class="fa fa-github-square" style="cursor: pointer;"></i>
+                <i class="fa fa-twitter-square" style="cursor: pointer; color: rgb(49, 105, 226);"></i>
+                <i class="fa fa-instagram" style="cursor: pointer; color: red;"></i>
             </div>
             <br>
             <!-- profile-footer -->
@@ -65,7 +70,9 @@
             </div>
             <br>
             <div class="col-12 post-body">
-                {{ post.body }}
+                <p style="word-wrap: break-word;">
+                    {{ post.body }}
+                </p>
             </div>
 
             {% if user.is_authenticated %}

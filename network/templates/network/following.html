@@ -25,7 +25,9 @@
       </div>
       <br>
       <div class="col-12 post-body">
-        {{ post.body }}
+        <p style="word-wrap: break-word;">
+          {{ post.body }}
+        </p>
       </div>
 
       {% if user.is_authenticated %}

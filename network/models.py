@@ -9,10 +9,10 @@ class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="post_author")
     body = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    totalLikes = models.IntegerField()
-    totalDislikes = models.IntegerField()
-    totalFollower = models.IntegerField()
-    totalComment = models.IntegerField()
+    totalLikes = models.IntegerField(default=0)
+    totalDislikes = models.IntegerField(default=0)
+    totalFollower = models.IntegerField(default=0)
+    totalComment = models.IntegerField(default=0)
     
     def __str__(self):
         return str(self.id)

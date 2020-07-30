@@ -14,13 +14,33 @@ from .models import *
 def index(request):
     if request.POST:
         res = request.POST['post-body']
-        post = Post(user=request.user, body=res)
+        post = Post(user=request.user, body=res, )
         post.save()
 
     posts = Post.objects.all().order_by('-pk')
     
     context = {'posts': posts}
     return render(request, "network/index.html", context)
+
+
+def update_post(request, id):
+    post = Post.objects.filter(pk=id)
+    for x in post:
+        body = x.body
+        return JsonResponse({"body":body}, status=200)
+    
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if data.get('post_id') is not None:
+            id = data.get('post_id')
+            edited_post = data.get('edited_post')
+            post = Post.objects.filter(pk=id)
+            for post in post:
+                post.body = edited_post
+                post.save()
+                body = post.body
+                
+                return JsonResponse({"body":body}, status=200)
 
 
 def login_view(request):
@@ -73,6 +93,8 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
 @csrf_exempt
 @login_required
 def vote(request):
@@ -162,9 +184,16 @@ def vote(request):
 
 def profile(request, user_id):
     if request.user.is_authenticated:
+
+        follower = Follower.objects.filter(user=User.objects.get(username=user_id)).count()
+        following = Follower.objects.filter(follower=User.objects.get(username=user_id)).count()
+
+        f = Follower.objects.filter(user=User.objects.get(username=user_id), follower=request.user).count()
+        print(f)
+        
         posts = Post.objects.filter(user=request.user).order_by('-pk')
         
-        context = {'posts': posts}
+        context = {'posts': posts, 'following':following, 'follower':follower, 'pUser':user_id, 'f':f}
         return render(request, "network/profile.html", context)
 
     return HttpResponseRedirect(reverse("login"))
