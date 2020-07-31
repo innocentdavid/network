@@ -48,10 +48,10 @@ function dislike(id) {
 }
 
 function editPost(id) {
-  fetch('/edit_post/'+id)
+  fetch(`/get_post/${id}`)
     .then(response => response.json())
     .then(response => {
-      console.log(response);
+      // console.log(response);
       document.querySelector('#post_id').value=id;
       document.querySelector('#edit_post').value=response.body;
       document.querySelector('.edit-cont').style.display='block';
@@ -61,17 +61,17 @@ function editPost(id) {
       e.preventDefault();
       let id = document.querySelector('#post_id').value;
       let edited_post = document.querySelector('#edit_post').value;
-      fetch('/edit_post', {
+      fetch('/update_post', {
         method: 'POST',
         body: JSON.stringify({                
-          id: id,
+          post_id: id,
           edited_post: edited_post
         })
       })
         .then(response => response.json())
         .then(response => {
-          document.querySelector('#post_body').innerHTML=response.body;
-          document.querySelector('.edit-cont').style.display='none';
+          // console.log(response);
+          location.reload();
         });
     })
 }

@@ -23,12 +23,15 @@ def index(request):
     return render(request, "network/index.html", context)
 
 
-def update_post(request, id):
+def get_post(request, id):
     post = Post.objects.filter(pk=id)
     for x in post:
         body = x.body
         return JsonResponse({"body":body}, status=200)
-    
+
+
+@csrf_exempt
+def update_post(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         if data.get('post_id') is not None:
@@ -39,7 +42,7 @@ def update_post(request, id):
                 post.body = edited_post
                 post.save()
                 body = post.body
-                
+
                 return JsonResponse({"body":body}, status=200)
 
 
@@ -201,6 +204,19 @@ def profile(request, user_id):
 
 def following(request):
     if request.user.is_authenticated:
+        # select * from post where user = (select user from following where following = request.user)
+        # Follower.objects.filter(user=request.user)
+        # posts = Post.objects.filter(user__following__follower=User.objects.get(follower= Follower.objects.filter(user=request.user).first))
+        # print(posts)
+
+        users = Follower.objects.filter(user=request.user)
+        for user in users:
+            # print(user.follower)
+            x = User.objects.filter(username=user.follower)
+            print(x)
+            post = Post.objects.filter(user__in = x)
+            # print(post)
+
         posts = Post.objects.filter().order_by('-pk')
         
         context = {'posts': posts}
