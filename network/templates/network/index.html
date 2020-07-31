@@ -65,9 +65,31 @@
     <!-- post 1 -->
     {% empty %}
     <div class="row">
-      <center><h2>No Post Yet!</h2></center>
+      <center>
+        <h2>No Post Yet!</h2>
+      </center>
     </div>
     {% endfor %}
+
+    <nav aria-label="...">
+      <ul class="pagination justify-content-center">
+
+        <li class="page-item {{ pPrevious }}">
+          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+
+        <input type="hidden" id="current_page" value="{{ current_page }}">
+        {% for page in page_range %}
+        <li class="page-item {{ page }}" id=""><a class="page-link" href="#">{{ page }}</a></li>
+        {% endfor %}
+
+        <li class="page-item {{ pNext }}">
+          <a class="page-link" href="#">Next</a>
+        </li>
+
+      </ul>
+    </nav>
+    <!-- pagination -->
 
   </div>
   <br>

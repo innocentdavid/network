@@ -27,11 +27,11 @@
                     <br>
                     {% if request.user.username != pUser %}
                     {% if f == 0 %}
-                    <div style="font-size: larger;" class="btn btn-success">
+                    <div style="font-size: larger;" class="btn btn-success" onclick="follow('{{ pUser }}')">
                         Follow
                     </div>
                     {% else %}
-                    <div style="font-size: larger;" class="btn btn-danger">
+                    <div style="font-size: larger;" class="btn btn-danger" onclick="unfollow('{{ pUser }}')">
                         Unfollow
                     </div>
                     {% endif %}

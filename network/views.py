@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 
 from .models import *
 
@@ -18,8 +19,40 @@ def index(request):
         post.save()
 
     posts = Post.objects.all().order_by('-pk')
+    per_page = 1
+    p = Paginator(posts, per_page)
     
-    context = {'posts': posts}
+    # pageNum will be requested by user but at default it's 1
+    pageNum=2
+    page = p.page(pageNum)
+    
+    page.start_index() # The 1-based index of the first item on this page
+    page.end_index() # The 1-based index of the first item on this page
+    
+    num_pages = p.num_pages
+    page_range_type = type(p.page_range)
+    page_range = p.page_range
+
+    if page.has_next() == True:
+        pNext = ''
+    else:
+        pNext = 'disabled'
+    
+    if page.has_previous() == True:
+        pPrevious = ''
+    else:
+        pPrevious = 'disabled'
+
+    pOther = page.has_other_pages()
+    NextPageNum = page.next_page_number()
+
+    # page.object_list
+    try:
+        print(page.object_list)
+    except:
+        print('error')
+    
+    context = {'posts': posts, 'pNext':pNext, 'pPrevious':pPrevious, 'page_range':page_range, 'current_page':pageNum}
     return render(request, "network/index.html", context)
 
 
@@ -185,16 +218,17 @@ def vote(request):
     # do something like below where you'll check if rUser has dislike and wants to like; firstly remove the dislike and add a like
     # update both like table and totalLikes in post table
 
+
 def profile(request, user_id):
+    # user_id is actuall username please
     if request.user.is_authenticated:
 
         follower = Follower.objects.filter(user=User.objects.get(username=user_id)).count()
         following = Follower.objects.filter(follower=User.objects.get(username=user_id)).count()
 
         f = Follower.objects.filter(user=User.objects.get(username=user_id), follower=request.user).count()
-        print(f)
         
-        posts = Post.objects.filter(user=request.user).order_by('-pk')
+        posts = Post.objects.filter(user=User.objects.get(username=user_id)).order_by('-pk')
         
         context = {'posts': posts, 'following':following, 'follower':follower, 'pUser':user_id, 'f':f}
         return render(request, "network/profile.html", context)
@@ -202,22 +236,34 @@ def profile(request, user_id):
     return HttpResponseRedirect(reverse("login"))
 
 
+@csrf_exempt
+def follow(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if data.get('pUser') is not None:
+            pUser = data.get('pUser')
+            action = data.get('action')
+
+            if action == 'follow':
+                follow = Follower(user=User.objects.get(username=pUser), follower= request.user)
+                follow.save()
+                print('success')
+
+                return JsonResponse({"message":'success'}, status=200)
+
+            elif action == 'unfollow':
+                unfollow = Follower.objects.filter(user=User.objects.get(username=pUser), follower= request.user)
+                unfollow.delete()
+                print('success')
+
+                return JsonResponse({"message":'success'}, status=200)
+
+
 def following(request):
     if request.user.is_authenticated:
-        # select * from post where user = (select user from following where following = request.user)
-        # Follower.objects.filter(user=request.user)
-        # posts = Post.objects.filter(user__following__follower=User.objects.get(follower= Follower.objects.filter(user=request.user).first))
-        # print(posts)
-
-        users = Follower.objects.filter(user=request.user)
-        for user in users:
-            # print(user.follower)
-            x = User.objects.filter(username=user.follower)
-            print(x)
-            post = Post.objects.filter(user__in = x)
-            # print(post)
-
-        posts = Post.objects.filter().order_by('-pk')
+        
+        # select * from post where user = (select user from follower where user = request.user)
+        posts = Post.objects.filter(user__following__follower=request.user.id).order_by('-pk')
         
         context = {'posts': posts}
         return render(request, "network/following.html", context)

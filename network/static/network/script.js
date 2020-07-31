@@ -1,4 +1,41 @@
-
+function follow(pUser) {
+  fetch('/follow', {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'follow',
+      pUser: pUser
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      // console.log(response);
+      if (response.message == 'success') {
+        location.reload();
+      }
+      else{
+        alert('something went wrong');
+      }
+    });
+}
+function unfollow(pUser) {
+  fetch('/follow', {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'unfollow',
+      pUser: pUser
+    })
+  })
+    .then(response => response.json())
+    .then(response => {
+      // console.log(response);
+      if (response.message == 'success') {
+        location.reload();
+      }
+      else{
+        alert('something went wrong');
+      }
+    });
+}
 
 function like(id) {
   let parent = document.getElementById(id);
@@ -80,4 +117,13 @@ function editPost(id) {
 function closeEditPost() {
   document.querySelector('.edit-cont').style.display='none';
   document.querySelector('#edit_post').value='';
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  current_page();
+})
+function current_page() {
+  let current_page = parseInt(document.getElementById('current_page').value) + 1;
+  document.querySelector('.pagination').children[current_page].classList.add('active');
 }
