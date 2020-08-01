@@ -10,7 +10,7 @@
 
     {% for post in posts %}
     <div class="row single-post">
-      <a href="/profile/{{ post.user }}" style="color:black; text-decoration:none;" class="col-md-6">
+      <a href="/profile/{{ post.user }}/1" style="color:black; text-decoration:none;" class="col-md-6">
         <span class="post-author">
           <i class="fa fa-user"></i>
           <span><b style="text-transform: capitalize; cursor: pointer;">{{ post.user }}</b></span>
@@ -47,6 +47,26 @@
       <center><h2>No Post Yet!</h2></center>
     </div>
     {% endfor %}
+
+    <nav aria-label="...">
+      <ul class="pagination justify-content-center">
+
+        <li onclick="pPrevF('{{ current_page }}')" class="page-item {{ pPrevious }}">
+          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+
+        <input type="hidden" id="current_page" value="{{ current_page }}">
+        {% for page in page_range %}
+        <li class="page-item {{ page }}" id=""><a class="page-link" href="/following/page/{{ page }}">{{ page }}</a></li>
+        {% endfor %}
+
+        <li onclick=" pNextF('{{ current_page }}')" class="page-item {{ pNext }}">
+          <a class="page-link" href="#">Next</a>
+        </li>
+
+      </ul>
+    </nav>
+    <!-- pagination -->
 
   </div>
   <br>

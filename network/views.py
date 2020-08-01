@@ -19,42 +19,55 @@ def index(request):
         post.save()
 
     posts = Post.objects.all().order_by('-pk')
-    per_page = 1
+    per_page = 10
     p = Paginator(posts, per_page)
-    
-    # pageNum will be requested by user but at default it's 1
-    pageNum=2
+    pageNum=1
     page = p.page(pageNum)
     
-    page.start_index() # The 1-based index of the first item on this page
-    page.end_index() # The 1-based index of the first item on this page
-    
-    num_pages = p.num_pages
-    page_range_type = type(p.page_range)
     page_range = p.page_range
 
     if page.has_next() == True:
         pNext = ''
     else:
-        pNext = 'disabled'
+        pNext = 'd-none'
     
     if page.has_previous() == True:
         pPrevious = ''
     else:
-        pPrevious = 'disabled'
+        pPrevious = 'd-none'
 
-    pOther = page.has_other_pages()
-    NextPageNum = page.next_page_number()
-
-    # page.object_list
-    try:
-        print(page.object_list)
-    except:
-        print('error')
+    post = page.object_list
     
-    context = {'posts': posts, 'pNext':pNext, 'pPrevious':pPrevious, 'page_range':page_range, 'current_page':pageNum}
+    context = {'posts': post, 'pNext':pNext, 'pPrevious':pPrevious, 'page_range':page_range, 'current_page':pageNum}
     return render(request, "network/index.html", context)
+    
+def page(request, pg):
+    if request.POST:
+        res = request.POST['post-body']
+        post = Post(user=request.user, body=res, )
+        post.save()
 
+    posts = Post.objects.all().order_by('-pk')
+    per_page = 10
+    p = Paginator(posts, per_page)
+    pageNum=pg
+    page = p.page(pageNum)
+    page_range = p.page_range
+
+    if page.has_next() == True:
+        pNext = ''
+    else:
+        pNext = 'd-none'
+    
+    if page.has_previous() == True:
+        pPrevious = ''
+    else:
+        pPrevious = 'd-none'
+
+    post = page.object_list
+    
+    context = {'posts': post, 'pNext':pNext, 'pPrevious':pPrevious, 'page_range':page_range, 'current_page':pageNum}
+    return render(request, "network/index.html", context)
 
 def get_post(request, id):
     post = Post.objects.filter(pk=id)
@@ -219,7 +232,7 @@ def vote(request):
     # update both like table and totalLikes in post table
 
 
-def profile(request, user_id):
+def profile(request, user_id, pg):
     # user_id is actuall username please
     if request.user.is_authenticated:
 
@@ -230,7 +243,25 @@ def profile(request, user_id):
         
         posts = Post.objects.filter(user=User.objects.get(username=user_id)).order_by('-pk')
         
-        context = {'posts': posts, 'following':following, 'follower':follower, 'pUser':user_id, 'f':f}
+        per_page = 10
+        p = Paginator(posts, per_page)
+        pageNum=pg
+        page = p.page(pageNum)
+        page_range = p.page_range
+    
+        if page.has_next() == True:
+            pNext = ''
+        else:
+            pNext = 'd-none'
+        
+        if page.has_previous() == True:
+            pPrevious = ''
+        else:
+            pPrevious = 'd-none'
+    
+        post = page.object_list
+        
+        context = {'posts': post, 'following':following, 'follower':follower, 'pUser':user_id, 'f':f, 'pNext':pNext, 'pPrevious':pPrevious, 'page_range':page_range, 'current_page':pageNum}
         return render(request, "network/profile.html", context)
 
     return HttpResponseRedirect(reverse("login"))
@@ -259,13 +290,31 @@ def follow(request):
                 return JsonResponse({"message":'success'}, status=200)
 
 
-def following(request):
+def following(request, pg):
     if request.user.is_authenticated:
         
         # select * from post where user = (select user from follower where user = request.user)
         posts = Post.objects.filter(user__following__follower=request.user.id).order_by('-pk')
         
-        context = {'posts': posts}
+        per_page = 10
+        p = Paginator(posts, per_page)
+        pageNum=pg
+        page = p.page(pageNum)
+        page_range = p.page_range
+    
+        if page.has_next() == True:
+            pNext = ''
+        else:
+            pNext = 'd-none'
+        
+        if page.has_previous() == True:
+            pPrevious = ''
+        else:
+            pPrevious = 'd-none'
+    
+        post = page.object_list
+        
+        context = {'posts': post, 'pNext':pNext, 'pPrevious':pPrevious, 'page_range':page_range, 'current_page':pageNum}
         return render(request, "network/following.html", context)
 
     return HttpResponseRedirect(reverse("login"))

@@ -16,7 +16,7 @@
 </head>
 <body>
   <style>
-    .edit-cont{
+    .edit-cont {
       display: none;
       position: fixed;
       top: 0;
@@ -28,44 +28,41 @@
       padding: 10rem 5rem;
     }
   </style>
-
+  <input type="hidden" id="loginUser" value="{{ request.user }}" />
   <div class="edit-cont">
     <form action="" method="post" id="edit-post-form">
       {% csrf_token %}
       <input type="hidden" id="post_id">
       <div class="form-group">
-        <textarea class="form-control" id="edit_post" rows="10" autofocus ></textarea>
+        <textarea class="form-control" id="edit_post" rows="10" autofocus></textarea>
         <br><br>
         <center>
           <input type="submit" value="Update" class="btn btn-primary">
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <button type="reset" class="btn btn-secondary">Reset</button>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <div class="btn btn-danger" onclick="closeEditPost()">Discard</div>
+          <div class="btn btn-danger" onclick="closeEditPost()">
+            Discard
+          </div>
         </center>
       </div>
     </form>
   </div>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-md navbar-light bg-light">
     <a class="navbar-brand" href="/"><h4>Network</h4></a>
 
-    <div>
+    <div class="navbtns">
       <ul class="navbar-nav mr-auto">
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="#"><strong></strong></a>
-        </li>
-        {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'index' %}">All Posts</a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="/following">Following</a>
+          <a class="nav-link following" href="/following/page/1">Following</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/profile/{{ request.user }}" style="text-transform: capitalize;">{{ user.username }}'s Profile&nbsp;<i class="fa fa-user"></i></a>
+          <a class="nav-link" href="/profile/{{ request.user }}/1" style="text-transform: capitalize;">{{ user.username }}'s Profile&nbsp;<i class="fa fa-user"></i></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
